@@ -28,7 +28,7 @@ function TodoApp() {
   function deleteTask(index) {
     const newTasks = [...tasks];
     newTasks.splice(index, 1);
-    setTasks(tasks.splice(index, 1));
+    setTasks(newTasks);
   }
 
   const taskList = tasks.map((task, index) =>
