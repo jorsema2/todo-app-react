@@ -2,28 +2,45 @@ import React, { useState } from "react";
 import ReactDOM from "react-dom";
 
 
-function TodoApp(props) {
+function TodoApp() {
   const [tasks, setTasks] = useState([
-    "Fix bike",
-    "Clean room",
-    "Look to the wall",
+    {
+      name: 'Fix bike',
+      delete: false
+    }, {
+      name: 'Clean room',
+      delete: false
+    }
   ]);
+
   const [value, setValue] = useState('')
+
   function handleForm(e) {
     e.preventDefault();
-    setTasks([...tasks, value]);
+    setTasks(tasks.concat({name: value, delete: false}));
     setValue('');
   }
+
   function handleChange(e) {
     setValue(e.target.value);
   }
+
+  function deleteTask(index) {
+    const newTasks = [...tasks];
+    newTasks.splice(index, 1);
+    setTasks(tasks.splice(index, 1));
+  }
+
+  const taskList = tasks.map((task, index) =>
+  <div key = {tasks.name}>
+    <li>{tasks[index].name}</li>
+    <button onClick={() => deleteTask(index)}>Delete</button>
+  </div>
+  )
+
   return (
-    <div style={{color:value}}>
-      <ul>
-        {tasks.map((task) => (
-          <li>{task}</li>
-        ))}
-      </ul>
+    <div>
+      <ul>{taskList}</ul>
       <form onSubmit={handleForm}>
         <input onChange={handleChange} type="text" value={value}></input>
         <button>Add task to list</button>
