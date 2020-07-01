@@ -1,19 +1,19 @@
-import React, { useState } from "react";
+import React, {useState} from "react";
 import ReactDOM from "react-dom";
-
 
 function TodoApp() {
   const [tasks, setTasks] = useState([
     {
-      name: 'Fix bike',
-      delete: false
-    }, {
-      name: 'Clean room',
-      delete: false
-    }
+      name: "Fix bike",
+      completed: true,
+    },
+    {
+      name: "Clean room",
+      completed: false,
+    },
   ]);
 
-  const [value, setValue] = useState('')
+  const [value, setValue] = useState("");
 
   const [input, setInput] = useState({
     value: '',
@@ -22,49 +22,38 @@ function TodoApp() {
 
   function handleForm(e) {
     e.preventDefault();
-    setTasks(tasks.concat({name: value, delete: false}));
-    setValue('');
+    const newTasks = [...tasks, {name: value, completed: false}]
+    setTasks(newTasks);
+    setValue("");
   }
 
   function handleChange(e) {
     setValue(e.target.value);
   }
 
-  function updateTask(task) {
-    console.log('hey');
-    if (el => el.name === task.name) {
-      console.log('hey');
-      return (
-        <div>
-          <p>Hey</p>
-        </div>
-      )
-    }
+  function deleteTask(task) {
+    setTasks(tasks.filter(el => el.name !== task.name));
   }
 
-  function deleteTask(task) {
-    const newTasks = tasks.filter(el => el.name !== task.name);
+  function completedTask(task){
+    const newTasks = tasks.map(el => {
+      if(el.name === task.name){
+        el.completed = !el.completed;
+      }
+
+      return task;
+    });
+
     setTasks(newTasks);
   }
 
-  function createSomething(e) {
-    e.preventDefault();
-    input.hidden = !input.hidden;
-    if (input.hidden === false) {
-      return <div><p>Hey</p></div>;
-    };
-  }
-
-  const taskList = tasks.map((task) =>
-  <div key = {task.name}>
-    <li>{task.name}</li>
-    <button onClick={() => updateTask(task)}>Update</button>
-    <button onClick={() => deleteTask(task)}>Delete</button>
-    <form onSubmit={createSomething}>
-      <button>Create</button>
-    </form>
-  </div>
-  )
+  const taskList = tasks.map((task) => (
+    <div key={task.name} style={{ background: task.completed ? 'pink': 'white' }} >
+      <li>{task.name}</li>
+       <button onClick={() => completedTask(task)}>Complete</button>
+      <button onClick={() => deleteTask(task)}>Delete</button>
+    </div>
+  ));
 
   return (
     <div>
@@ -76,6 +65,36 @@ function TodoApp() {
     </div>
   );
 }
+/**
+ * 
+ * function useState(value){
+    let initialValue = value;
+    function changeValue(newValue){
+        initialValue = newValue;
+    }
+
+    return [initialValue, changeValue];
+}
+
+       data     update data         DB   initial value
+const [tasks,   setTasks       ] = useState([])
+
+
+
+
+class Todo extends React.Component {
+    state ={
+        todos: [], 
+        value: ''
+    }
+
+    deleteTodos(){
+        this.setState({ todos: [1,2,3,4], value: 'dog' })
+    }
+
+
+}
+ */
 
 ReactDOM.render(<TodoApp />, document.getElementById("root"));
 
