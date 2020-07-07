@@ -6,19 +6,16 @@ function TodoApp() {
     {
       name: "Fix bike",
       completed: true,
+      update: false
     },
     {
       name: "Clean room",
       completed: false,
+      update: false
     },
   ]);
 
   const [value, setValue] = useState("");
-
-  const [input, setInput] = useState({
-    value: '',
-    hidden: true
-  });
 
   function handleForm(e) {
     e.preventDefault();
@@ -36,25 +33,78 @@ function TodoApp() {
   }
 
   function completedTask(task){
+
     const newTasks = tasks.map(el => {
+
       if(el.name === task.name){
         el.completed = !el.completed;
-      }
 
-      return task;
+      }
+      return el;
+    });
+    // Ask Cristian later through a loom video:
+    // console.log(newTasks);
+    setTasks(newTasks);
+    // console.log(tasks);
+  }
+
+  function updateTask(task) {
+
+    const newTasks = tasks.map(el => {
+
+      if(el.name === task.name){
+        el.update = !el.update;
+      }
+      return el;
     });
 
     setTasks(newTasks);
   }
 
+  function NewInput() {
+    const [input, setInput] = useState("");
+
+    function updateInput(e) {
+      e.preventDefault();
+      const renameTasks = tasks.map(el => {
+        if(el.update === true) {
+          el.name = input;
+          el.update = false;
+        }
+        return el;
+      });
+      setTasks(renameTasks);
+    }
+  
+    function handleInput(e) {
+      console.log(input);
+      setInput(e.target.value);
+    }
+    
+    return(
+      <div>
+        <form onSubmit={updateInput}>
+          <input onChange={handleInput} type="text" value={input}></input>
+          <button>Update task</button>
+        </form>
+      </div>
+    )
+  }
+
   const taskList = tasks.map((task) => (
-    <div key={task.name} style={{ background: task.completed ? 'pink': 'white' }} >
-      <li>{task.name}</li>
-       <button onClick={() => completedTask(task)}>Complete</button>
-      <button onClick={() => deleteTask(task)}>Delete</button>
+    <div>
+      <div key={task.name} style={{ background: task.completed ? 'pink': 'white' }} >
+        <li>{task.name}</li>
+        <button onClick={() => updateTask(task)}>Update</button>
+        <button onClick={() => completedTask(task)}>Complete</button>
+        <button onClick={() => deleteTask(task)}>Delete</button>
+        {task.update === true &&
+          <NewInput />
+        }
+      </div>      
     </div>
   ));
-
+  
   return (
     <div>
       <ul>{taskList}</ul>
@@ -64,7 +114,11 @@ function TodoApp() {
       </form>
     </div>
   );
+
 }
+
+ReactDOM.render(<TodoApp />, document.getElementById("root"));
+
 /**
  * 
  * function useState(value){
@@ -95,7 +149,3 @@ class Todo extends React.Component {
 
 }
  */
-
-ReactDOM.render(<TodoApp />, document.getElementById("root"));
-
-// Link with the right question: https://www.google.com/search?q=show+input+box+when+clicked+react&oq=show+input+box+when+clicked+react&aqs=chrome..69i57j0.12244j0j7&sourceid=chrome&ie=UTF-8
