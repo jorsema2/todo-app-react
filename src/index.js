@@ -1,3 +1,133 @@
+import React, {useState, useRef, useEffect} from "react";
+import ReactDOM from "react-dom";
+
+const TaskItem = (props) => {
+  const myInput = useRef(null);
+  const [editMode, setEditMode] = useState(false);
+  const [value, setValue] = useState(props.task.name);
+
+  useEffect(() => {
+    console.log("I have been changed!", editMode);
+    if (editMode) {
+      myInput.current.focus();
+    }
+  }, [editMode]);
+
+  const handleChange = (e) => {
+    setValue(e.target.value);
+  };
+
+  const handleBlur = () => {
+    setEditMode(!editMode);
+    props.updateTasks({...props.task, name: value});
+  };
+
+  return (
+    <div>
+      <div
+        key={props.task.name}
+        style={{background: props.task.completed ? "pink" : "white"}}
+      >
+        {!editMode && <li onClick={() => setEditMode(!editMode)}>{value}</li>}
+        {editMode && (
+          <input
+            onChange={handleChange}
+            ref={myInput}
+            value={value}
+            onBlur={handleBlur}
+          />
+        )}
+        <button onClick={() => props.completedTask(props.task)}>
+          Complete
+        </button>
+        <button onClick={() => props.deleteTask(props.task)}>Delete</button>
+      </div>
+    </div>
+  );
+};
+
+function TodoApp() {
+  const [tasks, setTasks] = useState([
+    {
+      name: "Fix bike",
+      completed: true,
+      update: false,
+      id: `${Math.random()}-${Math.random()}`,
+    },
+    {
+      name: "Clean room",
+      completed: false,
+      update: false,
+      id: `${Math.random()}-${Math.random()}`,
+    },
+  ]);
+
+  const [value, setValue] = useState("");
+
+  function handleForm(e) {
+    e.preventDefault();
+    const newTasks = [
+      ...tasks,
+      {name: value, completed: false, id: `${Math.random()}-${Math.random()}`},
+    ];
+    setTasks(newTasks);
+    setValue("");
+  }
+
+  function handleChange(e) {
+    setValue(e.target.value);
+  }
+
+  function deleteTask(task) {
+    setTasks(tasks.filter((el) => el.name !== task.name));
+  }
+
+  function completedTask(task) {
+    const newTasks = tasks.map((el) => {
+      if (el.id === task.id) {
+        el.completed = !el.completed;
+      }
+      return el;
+    });
+    setTasks(newTasks);
+  }
+
+  const updateTasks = (task) => {
+    console.log(task);
+    const newTasks = tasks.map((el) => {
+      if (el.id === task.id) {
+        return task;
+      }
+      return el;
+    });
+
+    setTasks(newTasks)
+  };
+
+  const taskList = tasks.map((task) => (
+    <TaskItem
+      task={task}
+      deleteTask={deleteTask}
+      completedTask={completedTask}
+      updateTasks={updateTasks}
+    />
+  ));
+
+  return (
+    <div>
+      <ul>{taskList}</ul>
+      <form onSubmit={handleForm}>
+        <input onChange={handleChange} type="text" value={value}></input>
+        <button>Add task to list</button>
+      </form>
+    </div>
+  );
+}
+
+ReactDOM.render(<TodoApp />, document.getElementById("root"));
+
+/*
+
 import React, {useState} from "react";
 import ReactDOM from "react-dom";
 
@@ -114,11 +244,12 @@ function TodoApp() {
       </form>
     </div>
   );
-
 }
+*/
 
-ReactDOM.render(<TodoApp />, document.getElementById("root"));
-
+/*** */
+/*** */
+/*** */
 /**
  * 
  * function useState(value){
