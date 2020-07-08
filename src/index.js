@@ -1,50 +1,7 @@
 import React, {useState, useRef, useEffect} from "react";
 import ReactDOM from "react-dom";
 
-const TaskItem = (props) => {
-  const myInput = useRef(null);
-  const [editMode, setEditMode] = useState(false);
-  const [value, setValue] = useState(props.task.name);
 
-  useEffect(() => {
-    console.log("I have been changed!", editMode);
-    if (editMode) {
-      myInput.current.focus();
-    }
-  }, [editMode]);
-
-  const handleChange = (e) => {
-    setValue(e.target.value);
-  };
-
-  const handleBlur = () => {
-    setEditMode(!editMode);
-    props.updateTasks({...props.task, name: value});
-  };
-
-  return (
-    <div>
-      <div
-        key={props.task.name}
-        style={{background: props.task.completed ? "pink" : "white"}}
-      >
-        {!editMode && <li onClick={() => setEditMode(!editMode)}>{value}</li>}
-        {editMode && (
-          <input
-            onChange={handleChange}
-            ref={myInput}
-            value={value}
-            onBlur={handleBlur}
-          />
-        )}
-        <button onClick={() => props.completedTask(props.task)}>
-          Complete
-        </button>
-        <button onClick={() => props.deleteTask(props.task)}>Delete</button>
-      </div>
-    </div>
-  );
-};
 
 function TodoApp() {
   const [tasks, setTasks] = useState([
@@ -63,6 +20,51 @@ function TodoApp() {
   ]);
 
   const [value, setValue] = useState("");
+
+  const TaskItem = (props) => {
+    const myInput = useRef(null);
+    const [editMode, setEditMode] = useState(false);
+    const [value, setValue] = useState(props.task.name);
+
+    useEffect(() => {
+      console.log("I have been changed!", editMode);
+      if (editMode) {
+        myInput.current.focus();
+      }
+    }, [editMode]);
+
+    const handleChange = (e) => {
+      setValue(e.target.value);
+    };
+
+    const handleBlur = () => {
+      setEditMode(!editMode);
+      props.updateTasks({...props.task, name: value});
+    };
+
+    return (
+      <div>
+        <div
+          key={props.task.name}
+          style={{background: props.task.completed ? "pink" : "white"}}
+        >
+          {!editMode && <li onClick={() => setEditMode(!editMode)}>{value}</li>}
+          {editMode && (
+            <input
+              onChange={handleChange}
+              ref={myInput}
+              value={value}
+              onBlur={handleBlur}
+            />
+          )}
+          <button onClick={() => props.completedTask(props.task)}>
+            Complete
+          </button>
+          <button onClick={() => props.deleteTask(props.task)}>Delete</button>
+        </div>
+      </div>
+    );
+  };
 
   function handleForm(e) {
     e.preventDefault();
@@ -126,7 +128,7 @@ function TodoApp() {
 
 ReactDOM.render(<TodoApp />, document.getElementById("root"));
 
-/*
+/* Code lost during econd Cristian's review
 
 import React, {useState} from "react";
 import ReactDOM from "react-dom";
@@ -246,13 +248,9 @@ function TodoApp() {
   );
 }
 */
+/* Code lost during first Cristian's review
 
-/*** */
-/*** */
-/*** */
-/**
- * 
- * function useState(value){
+function useState(value){
     let initialValue = value;
     function changeValue(newValue){
         initialValue = newValue;
