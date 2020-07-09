@@ -79,7 +79,7 @@ function TodoApp() {
   }
 
   function deleteTask(task) {
-    setTasks(tasks.filter((el) => el.name !== task.name));
+    setTasks(tasks.filter((el) => el.id !== task.id));
   }
 
   function completedTask(task) {
