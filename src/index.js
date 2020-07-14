@@ -39,7 +39,6 @@ function TodoApp() {
 
   function handleChange(e) {
     setValue(e.target.value);
-    console.log(tasks)
   }
 
   function deleteTask(task) {
@@ -80,7 +79,6 @@ function TodoApp() {
 
         if (task.priority !== 5) {
           task.priority++;
-          console.log(task);
         } else if (task.priority === null) {
           task.priority = 1;
         } else {
@@ -91,7 +89,6 @@ function TodoApp() {
     });
 
     setTasks(newTasks);
-
   }
 
   // Recovers a task from the recycle bin:
@@ -117,6 +114,15 @@ function TodoApp() {
     setDeletedTasks([]);
   }
 
+  // Sorts tasks according to their priority:
+  function sortByPriority() {
+    function compare(a, b) {
+      return b.priority - a.priority;
+    }
+    const tasksSorted = [...tasks].sort(compare);
+    setTasks(tasksSorted);
+  }
+  
   const TaskItem = (props) => {
     const myInput = useRef(null);
     const [editMode, setEditMode] = useState(false);
@@ -130,7 +136,6 @@ function TodoApp() {
   
     const handleChange = (e) => {
       setValue(e.target.value);
-
     };
   
     const handleBlur = () => {
@@ -166,16 +171,9 @@ function TodoApp() {
     );
   };
 
-  const recycleBin = deletedTasks.map((deletedTask) => (
-      <ul>
-        <li style={{background: deletedTask.completed ? "pink" : "white"}}>{deletedTask.name}</li>
-        <button onClick={() => recoverTasks(deletedTask)}>Recover</button>
-        <button onClick={() => deleteTaskForever(deletedTask)}>DeleteForever</button>
-      </ul>
-  ));
-
   const taskList = tasks.map((task) => (
     <TaskItem
+      key={task.name}
       task={task}
       deleteTask={deleteTask}
       completedTask={completedTask}
@@ -183,8 +181,18 @@ function TodoApp() {
     />
   ));
 
+  
+  const recycleBin = deletedTasks.map((deletedTask) => (
+    <ul key={deletedTask.name}>
+      <li style={{background: deletedTask.completed ? "pink" : "white"}}>{deletedTask.name}</li>
+      <button onClick={() => recoverTasks(deletedTask)}>Recover</button>
+      <button onClick={() => deleteTaskForever(deletedTask)}>DeleteForever</button>
+    </ul>
+));
+
   return (
     <div>
+      <button onClick={() => sortByPriority()}>Order by priority</button>
       <ul>{taskList}</ul>
       <form onSubmit={handleForm}>
         <input onChange={handleChange} type="text" value={value}></input>
